@@ -9,3 +9,7 @@ app.use(express.json());
 app.use("/api", require("./routes/device.routes"));
 
 module.exports = app;
+
+app.get("/", (req, res) => {
+  res.send("🚀 MotoResQ API is running");
+});
