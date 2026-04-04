@@ -1,5 +1,5 @@
 const Device = require("../models/device.model");
-const admin = require("../config/firebase");
+const { admin, firebaseInitialized } = require("../config/firebase");
 const Accident = require("../models/accident.model");
 
 // ==========================
@@ -21,13 +21,15 @@ exports.updateDevice = async (req, res) => {
     device.accident = accident;
     device.last_seen = new Date();
 
+if (!device_id) {
+  return res.status(400).json({ message: "device_id required" });
+}
+
 // 🔥 Accident Handling + Logging + Notification
 if (accident === true) {
   console.log("🚨 Accident detected!");
 
-  if (!device_id) {
-  return res.status(400).json({ message: "device_id required" });
-}
+
   // 🧾 تسجيل الحادث في الداتابيز
   await Accident.create({
     device_id,
@@ -37,7 +39,7 @@ if (accident === true) {
   });
 
   // 🔔 إرسال Notification لو فيه token
-  if (device.device_token) {
+  if (firebaseInitialized && device.device_token) {
     try {
       await admin.messaging().send({
         notification: {

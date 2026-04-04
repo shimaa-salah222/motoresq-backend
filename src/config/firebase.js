@@ -1,18 +1,20 @@
 const admin = require("firebase-admin");
 
-let firebaseApp;
+let firebaseInitialized = false;
 
 try {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
+  if (process.env.FIREBASE_KEY) {
+    const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
-  firebaseApp = admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
 
-  console.log("Firebase initialized ✅");
-
+    firebaseInitialized = true;
+    console.log("Firebase initialized ✅");
+  }
 } catch (err) {
-  console.log("Firebase not initialized ❌", err.message);
+  console.log("Firebase error ❌", err.message);
 }
 
-module.exports = admin;
+module.exports = { admin, firebaseInitialized };
