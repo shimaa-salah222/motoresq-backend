@@ -177,3 +177,80 @@ exports.getAccidents = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+//-----------------
+//all
+//-----------------
+exports.getAllAccidents = async (req, res) => {
+  try {
+    const accidents = await Accident.find().sort({ timestamp: -1 });
+
+    res.json(accidents);
+
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+//-----------
+//delete---
+//----------
+exports.deleteAccident = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Accident.findByIdAndDelete(id);
+
+    res.json({ message: "Accident deleted ✅" });
+
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+//----------
+//resolveAccident
+//----
+exports.resolveAccident = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const accident = await Accident.findByIdAndUpdate(
+      id,
+      { resolved: true },
+      { new: true }
+    );
+
+    res.json(accident);
+
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+//---------------
+// getState
+//--------------
+
+exports.getStats = async (req, res) => {
+  try {
+    const totalAccidents = await Accident.countDocuments();
+
+    const resolvedAccidents = await Accident.countDocuments({ resolved: true });
+
+    const activeAccidents = await Accident.countDocuments({ resolved: false });
+
+    const devices = await Device.countDocuments();
+
+    res.json({
+      totalAccidents,
+      resolvedAccidents,
+      activeAccidents,
+      devices
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
