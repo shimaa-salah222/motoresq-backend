@@ -9,8 +9,8 @@ app.use(express.json());
 app.use("/api", require("./routes/device.routes"));
 app.use("/api/auth", require("./routes/auth.routes"));
 
-module.exports = app;
-
 app.get("/", (req, res) => {
   res.send("🚀 MotoResQ API is running");
 });
+
+module.exports = app;

@@ -5,12 +5,10 @@ const accidentSchema = new mongoose.Schema({
   lat: Number,
   lng: Number,
   speed: Number,
-
   timestamp: {
     type: Date,
     default: Date.now
   },
-
   resolved: {
     type: Boolean,
     default: false
